@@ -58,19 +58,30 @@ describe('studio routes', () => {
     });
 
     it('should get all studios', async() => {
+        await Studio.create({
+            name: 'A place to shoot stuff',
+            address: {
+                city: 'Portland',
+                state: 'Oregon',
+                country: 'USA'
+            }
+        });
+
         return request(app)
             .get('/api/v1/studios')
             .then(res => {
-                expect(res.body).toEqual({
-                    _id: expect.any(String),
-                    name: 'A fine establishment',
-                    address: {
+                res.body.forEach(studio => {
+                    expect(studio).toEqual({
                         _id: expect.any(String),
-                        city: 'Cleveland',
-                        state: 'Ohio',
-                        country: 'USA'
-                    },
-                    __v: 0
+                        name: studio.name,
+                        address: {
+                            _id: expect.any(String),
+                            city: studio.address.city,
+                            state: studio.address.state,
+                            country: studio.address.country
+                        },
+                        __v: 0
+                    });
                 });
             });
     });
