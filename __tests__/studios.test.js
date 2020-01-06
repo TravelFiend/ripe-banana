@@ -85,4 +85,22 @@ describe('studio routes', () => {
                 });
             });
     });
+
+    it('should get a studio by id', () => {
+        return request(app)
+            .get(`/api/v1/studios/${studio._id}`)
+            .then(res => {
+                expect(res.body).toEqual({
+                    _id: expect.any(String),
+                    name: 'A fine establishment',
+                    address: {
+                        _id: expect.any(String),
+                        city: 'Cleveland',
+                        state: 'Ohio',
+                        country: 'USA'
+                    },
+                    __v: 0
+                });
+            });
+    });
 });
