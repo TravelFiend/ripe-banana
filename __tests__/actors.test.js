@@ -40,7 +40,7 @@ describe('actor routes', () => {
                 expect(res.body).toEqual({
                     _id: expect.any(String),
                     name: 'Doug Lass',
-                    dob: new Date('October 23, 1982'),
+                    dob: expect.any(String),
                     pob: 'Georgetown, MI',
                     __v: 0
                 });
@@ -61,8 +61,9 @@ describe('actor routes', () => {
                     expect(actor).toEqual({
                         _id: expect.any(String),
                         name: actor.name,
-                        dob: actor.dob.toISOString(),
-                        pob: actor.pob
+                        dob: actor.dob,
+                        pob: actor.pob,
+                        __v: 0
                     });
                 });
             });
