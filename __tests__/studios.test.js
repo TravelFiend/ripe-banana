@@ -31,7 +31,7 @@ describe('studio routes', () => {
         return mongoose.connection.close();
     });
 
-    it('should create a studio', (req, res, next) => {
+    it('should create a studio', () => {
         return request(app)
             .post('/api/v1/studios')
             .send({
@@ -47,6 +47,7 @@ describe('studio routes', () => {
                     _id: expect.any(String),
                     name: 'A place to shoot stuff',
                     address: {
+                        _id: expect.any(String),
                         city: 'Portland',
                         state: 'Oregon',
                         country: 'USA'
