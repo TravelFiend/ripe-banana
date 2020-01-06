@@ -86,7 +86,7 @@ describe('studio routes', () => {
             });
     });
 
-    it('should get a studio by id', () => {
+    it('should get a studio by id', async() => {
         return request(app)
             .get(`/api/v1/studios/${studio._id}`)
             .then(res => {
