@@ -84,7 +84,8 @@ describe('review routes', () => {
                     film: {
                         _id: expect.any(String),
                         title: 'A movie'
-                    }
+                    },
+                    __v: 0
                 });
             });
     });
@@ -98,7 +99,10 @@ describe('review routes', () => {
                         _id: expect.any(String),
                         rating: 4,
                         review: 'A movie about absolutely nothing',
-                        film: film._id
+                        film: {
+                            _id: expect.any(String),
+                            title: 'A movie'
+                        }
                     });
                 });
             });

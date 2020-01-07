@@ -57,8 +57,7 @@ describe('reviewer routes', () => {
                     expect(reviewer).toEqual({
                         _id: expect.any(String),
                         name: reviewer.name,
-                        company: reviewer.company,
-                        __v: 0
+                        company: reviewer.company
                     });
                 });
             });
@@ -80,8 +79,7 @@ describe('reviewer routes', () => {
                             _id: expect.any(String),
                             title: 'A movie'
                         }
-                    }],
-                    __v: 0
+                    }]
                 });
             });
     });

@@ -110,15 +110,9 @@ describe('studio routes', () => {
                         country: 'USA'
                     },
                     films: [{
+                        _id: expect.any(String),
                         title: 'Fear and Loathing in Las Vegas',
-                        studio: studio._id,
-                        released: 1996,
-                        cast: {
-                            role: 'Hunter S. Thompson',
-                            actor: 'Johnny Depp'
-                        }
                     }],
-                    __v: 0
                 });
             });
     });

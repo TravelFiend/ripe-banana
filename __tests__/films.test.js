@@ -83,7 +83,7 @@ describe('film routes', () => {
                 expect(res.body).toEqual({
                     _id: expect.any(String),
                     title: 'A movie',
-                    studio: studio._id,
+                    studio: expect.any(String),
                     released: 2010,
                     cast: [{
                         _id: expect.any(String),
@@ -112,7 +112,12 @@ describe('film routes', () => {
                 res.body.forEach(film => {
                     expect(film).toEqual({
                         _id: expect.any(String),
-                        studio: expect.any(String)
+                        title: film.title,
+                        released: film.released,
+                        studio: {
+                            _id: studio._id.toString(),
+                            name: studio.name
+                        },
                     });
                 });
             });

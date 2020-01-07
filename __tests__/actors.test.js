@@ -79,7 +79,7 @@ describe('actor routes', () => {
         });
 
         await Film.create({
-            title: 'A movie',
+            title: 'A Movie',
             studio: studio._id,
             released: 2010,
             cast: {
@@ -92,12 +92,11 @@ describe('actor routes', () => {
             .get(`/api/v1/actors/${actor._id}`)
             .then(res => {
                 expect(res.body).toEqual({
-                    _id: expect.any(String),
                     name: 'MikeEG',
                     dob: actor.dob.toISOString(),
                     pob: 'Cleveland, OH',
                     films: [{
-                        id: expect.any(String),
+                        _id: expect.any(String),
                         title: 'A Movie',
                         released: 2010
                     }]
