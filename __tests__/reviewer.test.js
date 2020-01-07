@@ -29,18 +29,18 @@ describe('reviewer routes', () => {
 
     it('should create a reviewer', () => {
         return request(app)
-            .post('/api/v1/reviewer')
+            .post('/api/v1/reviewers')
             .send({
                 name: 'Bobby Blue',
                 company: 'Color Palace'
             })
             .then(res => {
-                expect(res.body.toEqual({
+                expect(res.body).toEqual({
                     _id: expect.any(String),
                     name: 'Bobby Blue',
                     company: 'Color Palace',
                     __v: 0
-                }));
+                });
             });
     });
 
@@ -50,7 +50,7 @@ describe('reviewer routes', () => {
             company: 'Color Palace'
         });
         return request(app)
-            .get('/api/v1/reviewer')
+            .get('/api/v1/reviewers')
             .then(res => {
                 res.body.forEach(reviewer => {
                     expect(reviewer).toEqual({
@@ -78,7 +78,7 @@ describe('reviewer routes', () => {
 
     it('should update a reviewer by id', async() => {
         return request(app)
-            .patch(`/api/v1/reviewer/${reviewer._id}`)
+            .patch(`/api/v1/reviewers/${reviewer._id}`)
             .send({ company: 'Legwarmer' })
             .then(res => {
                 expect(res.body).toEqual({
