@@ -78,4 +78,27 @@ describe('film routes', () => {
                 });
             });
     });
+
+    it('should get all films', async() => {
+        await Film.create({
+            title: 'Robots in outer space',
+            studio: studio._id,
+            released: 2013,
+            cast: {
+                role: 'Robot from outer space',
+                actor: actor._id
+            }
+        });
+
+        return request(app)
+            .get('/api/v1/films')
+            .then(res => {
+                res.body.forEach(film => {
+                    expect(film).toEqual({
+                        _id: expect.any(String),
+                        studio: expect.any(String)
+                    });
+                });
+            });
+    });
 });
