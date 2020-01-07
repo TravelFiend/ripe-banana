@@ -81,10 +81,7 @@ describe('review routes', () => {
                     rating: 3,
                     reviewer: reviewer._id.toString(),
                     review: 'A movie about absolutely something',
-                    film: {
-                        _id: expect.any(String),
-                        title: 'A movie'
-                    },
+                    film: expect.any(String),
                     __v: 0
                 });
             });
@@ -97,11 +94,11 @@ describe('review routes', () => {
                 res.body.forEach(review => {
                     expect(review).toEqual({
                         _id: expect.any(String),
-                        rating: 4,
-                        review: 'A movie about absolutely nothing',
+                        rating: review.rating,
+                        review: review.review,
                         film: {
                             _id: expect.any(String),
-                            title: 'A movie'
+                            title: review.film.title
                         }
                     });
                 });
