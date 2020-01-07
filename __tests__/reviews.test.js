@@ -88,4 +88,19 @@ describe('review routes', () => {
                 });
             });
     });
+
+    it('should get all reviews', () => {
+        return request(app)
+            .get('/api/v1/reviews')
+            .then(res => {
+                res.body.forEach(review => {
+                    expect(review).toEqual({
+                        _id: expect.any(String),
+                        rating: 4,
+                        review: 'A movie about absolutely nothing',
+                        film: film._id
+                    });
+                });
+            });
+    });
 });
