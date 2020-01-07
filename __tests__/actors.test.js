@@ -60,10 +60,7 @@ describe('actor routes', () => {
                 res.body.forEach(actor => {
                     expect(actor).toEqual({
                         _id: expect.any(String),
-                        name: actor.name,
-                        dob: actor.dob,
-                        pob: actor.pob,
-                        __v: 0
+                        name: actor.name
                     });
                 });
             });

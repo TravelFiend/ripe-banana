@@ -73,14 +73,7 @@ describe('studio routes', () => {
                 res.body.forEach(studio => {
                     expect(studio).toEqual({
                         _id: expect.any(String),
-                        name: studio.name,
-                        address: {
-                            _id: expect.any(String),
-                            city: studio.address.city,
-                            state: studio.address.state,
-                            country: studio.address.country
-                        },
-                        __v: 0
+                        name: studio.name
                     });
                 });
             });
