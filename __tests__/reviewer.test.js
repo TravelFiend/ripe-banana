@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Reviewer = require('../lib/models/Reviewer');
+const Review = require('../lib/models/Review');
 
 describe('reviewer routes', () => {
     beforeAll(() => {
@@ -63,7 +64,7 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should get a reviewer by id', async() => {
+    it('should get a reviewer by id', () => {
         return request(app)
             .get(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
@@ -76,7 +77,7 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should update a reviewer by id', async() => {
+    it('should update a reviewer by id', () => {
         return request(app)
             .patch(`/api/v1/reviewers/${reviewer._id}`)
             .send({ company: 'Legwarmer' })
@@ -90,8 +91,13 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should not delete a reviewer if they have reviews', () => {
+    it('should not delete a reviewer if they have reviews', async() => {
+        const review = await Review.create({
 
+        });
+
+        return request(app)
+        
     });
 
     it('should delete a reviewer if they have no reviews', () => {
