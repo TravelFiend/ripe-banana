@@ -5,6 +5,8 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Actor = require('../lib/models/Actor');
+const Film = require('../lib/models/Film');
+const Studio = require('../lib/models/Studio');
 
 describe('actor routes', () => {
     beforeAll(() => {
@@ -67,15 +69,38 @@ describe('actor routes', () => {
     });
 
     it('should get an actor by id', async() => {
+        const studio = await Studio.create({
+            name: 'Movie Makers',
+            address: {
+                city: 'Des Moines',
+                state: 'Iowa',
+                country: 'USA'
+            }
+        });
+
+        await Film.create({
+            title: 'A movie',
+            studio: studio._id,
+            released: 2010,
+            cast: {
+                role: 'A fake person',
+                actor: actor._id
+            }
+        });
+        
         return request(app)
             .get(`/api/v1/actors/${actor._id}`)
             .then(res => {
                 expect(res.body).toEqual({
                     _id: expect.any(String),
                     name: 'MikeEG',
-                    dob: expect.any(String),
+                    dob: actor.dob.toISOString(),
                     pob: 'Cleveland, OH',
-                    __v: 0
+                    films: [{
+                        id: expect.any(String),
+                        title: 'A Movie',
+                        released: 2010
+                    }]
                 });
             });
     });
