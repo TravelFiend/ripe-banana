@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+const Review = require('../lib/models/Review');
+const Reviewer = require('../lib/models/Reviewer');
 
 describe('film routes', () => {
     beforeAll(() => {
@@ -17,6 +19,8 @@ describe('film routes', () => {
         return mongoose.connection.dropDatabase();
     });
 
+    let review;
+    let reviewer;
     let actor;
     let studio;
     let film;
@@ -44,6 +48,18 @@ describe('film routes', () => {
                 role: 'A fake person',
                 actor: actor._id
             }
+        });
+
+        reviewer = await Reviewer.create({
+            name: 'George Clinton',
+            company: 'Funkadelictronics'
+        });
+
+        review = await Review.create({
+            rating: 4,
+            reviewer: reviewer._id,
+            review: 'A movie about absolutely nothing',
+            film: film._id
         });
     });
 
@@ -98,6 +114,32 @@ describe('film routes', () => {
                         _id: expect.any(String),
                         studio: expect.any(String)
                     });
+                });
+            });
+    });
+
+    it('should get a film by id', () => {
+        return request(app)
+            .get(`/api/v1/films/${film._id}`)
+            .then(res => {
+                expect(res.body).toEqual({
+                    title: 'A movie',
+                    studio: studio._id,
+                    released: 2010,
+                    cast: [{
+                        _id: expect.any(String),
+                        role: 'A fake person',
+                        actor: {
+                            _id: expect.any(String),
+                            name: 'Carl'
+                        }
+                    }],
+                    reviews: [{
+                        id: expect.any(String),
+                        rating: 4,
+                        reviewer: reviewer._id,
+                        review: 'A movie about absolutely nothing'
+                    }]
                 });
             });
     });
