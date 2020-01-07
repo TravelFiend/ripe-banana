@@ -91,10 +91,10 @@ describe('studio routes', () => {
             title: 'Fear and Loathing in Las Vegas',
             studio: studio._id,
             released: 1996,
-            cast: {
+            cast: [{
                 role: 'Hunter S. Thompson',
                 actor: actor._id
-            }
+            }]
         });
 
         return request(app)
