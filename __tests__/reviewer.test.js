@@ -72,6 +72,15 @@ describe('reviewer routes', () => {
                     _id: expect.any(String),
                     name: 'MikeEG',
                     company: 'Chinchiller',
+                    reviews: [{
+                        _id: expect.any(String),
+                        rating: 3,
+                        review: 'Stuff happened it was alright',
+                        film: {
+                            _id: expect.any(String),
+                            title: 'A movie'
+                        }
+                    }],
                     __v: 0
                 });
             });
