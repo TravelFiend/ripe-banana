@@ -5,6 +5,8 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
 
 describe('studio routes', () => {
     beforeAll(() => {
@@ -80,6 +82,21 @@ describe('studio routes', () => {
     });
 
     it('should get a studio by id', async() => {
+        const actor = await Actor.create({
+            name: 'Johnny Depp',
+            dob: new Date('June 6, 1974'),
+            pob: 'Boise, ID'
+        });
+        await Film.create({
+            title: 'Fear and Loathing in Las Vegas',
+            studio: studio._id,
+            released: 1996,
+            cast: {
+                role: 'Hunter S. Thompson',
+                actor: actor._id
+            }
+        });
+
         return request(app)
             .get(`/api/v1/studios/${studio._id}`)
             .then(res => {
@@ -92,6 +109,15 @@ describe('studio routes', () => {
                         state: 'Ohio',
                         country: 'USA'
                     },
+                    films: [{
+                        title: 'Fear and Loathing in Las Vegas',
+                        studio: studio._id,
+                        released: 1996,
+                        cast: {
+                            role: 'Hunter S. Thompson',
+                            actor: 'Johnny Depp'
+                        }
+                    }],
                     __v: 0
                 });
             });
