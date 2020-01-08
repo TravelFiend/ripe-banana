@@ -104,4 +104,19 @@ describe('review routes', () => {
                 });
             });
     });
+
+    it('should delete a review', () => {
+        return request(app)
+            .delete(`/api/v1/reviews/${review._id}`)
+            .then(res => {
+                expect(res.body).toEqual({
+                    _id: review._id.toString(),
+                    rating: 4,
+                    reviewer: reviewer.id.toString(),
+                    review: 'A movie about absolutely nothing',
+                    film: film._id.toString(),
+                    __v: 0
+                });
+            });
+    });
 });
