@@ -6,6 +6,9 @@ const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Reviewer = require('../lib/models/Reviewer');
 const Review = require('../lib/models/Review');
+const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
 
 describe('reviewer routes', () => {
     beforeAll(() => {
@@ -16,12 +19,43 @@ describe('reviewer routes', () => {
         return mongoose.connection.dropDatabase();
     });
 
+    let studio;
+    let actor;
     let reviewer;
+    let film;
     beforeEach(async() => {
         reviewer = await Reviewer.create({
             name: 'MikeEG',
             company: 'Chinchiller'
         });
+        studio = await Studio.create({
+            name: 'Movie Makers',
+            address: {
+                city: 'Des Moines',
+                state: 'Iowa',
+                country: 'USA'
+            }
+        });
+        actor = await Actor.create({
+            name: 'Carl',
+            dob: new Date('October 14, 1983'),
+            pob: 'Austin, TX'
+        });
+        film = await Film.create({
+            title: 'A movie',
+            studio: studio._id,
+            released: 2010,
+            cast: {
+                role: 'A fake person',
+                actor: actor._id
+            }
+        });
+        await Review.create([{
+            rating: 4,
+            reviewer: reviewer._id,
+            review: 'A movie about absolutely nothing',
+            film: film._id
+        }]);
     });
 
     afterAll(() => {
@@ -45,11 +79,7 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should get all reviewers', async() => {
-        await Reviewer.create({
-            name: 'Bobby Blue',
-            company: 'Color Palace'
-        });
+    it('should get all reviewers', () => {
         return request(app)
             .get('/api/v1/reviewers')
             .then(res => {
@@ -73,27 +103,13 @@ describe('reviewer routes', () => {
                     company: 'Chinchiller',
                     reviews: [{
                         _id: expect.any(String),
-                        rating: 3,
-                        review: 'Stuff happened it was alright',
+                        rating: 4,
+                        review: 'A movie about absolutely nothing',
                         film: {
                             _id: expect.any(String),
                             title: 'A movie'
                         }
                     }]
-                });
-            });
-    });
-
-    it('should update a reviewer by id', () => {
-        return request(app)
-            .patch(`/api/v1/reviewers/${reviewer._id}`)
-            .send({ company: 'Legwarmer' })
-            .then(res => {
-                expect(res.body).toEqual({
-                    _id: expect.any(String),
-                    name: 'MikeEG',
-                    company: 'Legwarmer',
-                    __v: 0
                 });
             });
     });
