@@ -115,7 +115,7 @@ describe('reviewer routes', () => {
     });
 
     it('should not delete a reviewer if they have reviews', async() => {
-        const review = await Review.create([{
+        await Review.create([{
             rating: 4,
             reviewer: reviewer._id,
             review: 'A movie about absolutely nothing',
@@ -125,7 +125,10 @@ describe('reviewer routes', () => {
         return request(app)
             .delete(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
-                expect(res.body).toEqual('didn\'t work');
+                expect(res.body).toEqual({
+                    message: 'Didn\'t work',
+                    status: 500
+                });
             });
     });
 
@@ -137,6 +140,7 @@ describe('reviewer routes', () => {
                     _id: expect.any(String),
                     name: 'MikeEG',
                     company: 'Chinchiller',
+                    reviews: [],
                     __v: 0
                 });
             });
