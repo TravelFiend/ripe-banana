@@ -114,6 +114,19 @@ describe('reviewer routes', () => {
             });
     });
 
+    it('should delete a reviewer if they have no reviews', () => {
+        return request(app)
+            .delete(`/api/v1/reviewers/${reviewer._id}`)
+            .then(res => {
+                expect(res.body).toEqual({
+                    _id: expect.any(String),
+                    name: 'MikeEG',
+                    company: 'Chinchiller',
+                    __v: 0
+                });
+            });
+    });
+
     it('should not delete a reviewer if they have reviews', async() => {
         await Review.create([{
             rating: 4,
@@ -128,20 +141,6 @@ describe('reviewer routes', () => {
                 expect(res.body).toEqual({
                     message: 'Didn\'t work',
                     status: 500
-                });
-            });
-    });
-
-    it('should delete a reviewer if they have no reviews', () => {
-        return request(app)
-            .delete(`/api/v1/reviewers/${reviewer._id}`)
-            .then(res => {
-                expect(res.body).toEqual({
-                    _id: expect.any(String),
-                    name: 'MikeEG',
-                    company: 'Chinchiller',
-                    reviews: [],
-                    __v: 0
                 });
             });
     });
