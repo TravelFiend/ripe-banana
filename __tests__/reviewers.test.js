@@ -50,12 +50,6 @@ describe('reviewer routes', () => {
                 actor: actor._id
             }
         });
-        await Review.create([{
-            rating: 4,
-            reviewer: reviewer._id,
-            review: 'A movie about absolutely nothing',
-            film: film._id
-        }]);
     });
 
     afterAll(() => {
@@ -93,7 +87,13 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should get a reviewer by id', () => {
+    it('should get a reviewer by id', async() => {
+        await Review.create([{
+            rating: 4,
+            reviewer: reviewer._id,
+            review: 'A movie about absolutely nothing',
+            film: film._id
+        }]);
         return request(app)
             .get(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
@@ -115,12 +115,18 @@ describe('reviewer routes', () => {
     });
 
     it('should not delete a reviewer if they have reviews', async() => {
-        const review = await Review.create({
-
-        });
+        const review = await Review.create([{
+            rating: 4,
+            reviewer: reviewer._id,
+            review: 'A movie about absolutely nothing',
+            film: film._id
+        }]);
 
         return request(app)
-        
+            .delete(`/api/v1/reviewers/${reviewer._id}`)
+            .then(res => {
+                expect(res.body).toEqual('didn\'t work');
+            });
     });
 
     it('should delete a reviewer if they have no reviews', () => {
