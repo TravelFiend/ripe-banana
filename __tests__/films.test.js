@@ -19,7 +19,6 @@ describe('film routes', () => {
         return mongoose.connection.dropDatabase();
     });
 
-    let review;
     let reviewer;
     let actor;
     let studio;
@@ -129,7 +128,10 @@ describe('film routes', () => {
             .then(res => {
                 expect(res.body).toEqual({
                     title: 'A movie',
-                    studio: studio._id,
+                    studio: {
+                        _id: expect.any(String),
+                        name: 'Movie Makers'
+                    },
                     released: 2010,
                     cast: [{
                         _id: expect.any(String),
@@ -140,9 +142,12 @@ describe('film routes', () => {
                         }
                     }],
                     reviews: [{
-                        id: expect.any(String),
+                        _id: expect.any(String),
                         rating: 4,
-                        reviewer: reviewer._id,
+                        reviewer: {
+                            _id: expect.any(String),
+                            name: 'George Clinton'
+                        },
                         review: 'A movie about absolutely nothing'
                     }]
                 });
