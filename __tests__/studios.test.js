@@ -1,38 +1,9 @@
-require('dotenv').config();
+const { getStudio, getStudios } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Studio = require('../lib/models/Studio');
-const Film = require('../lib/models/Film');
-const Actor = require('../lib/models/Actor');
 
 describe('studio routes', () => {
-    beforeAll(() => {
-        connect();
-    });
-
-    beforeEach(() => {
-        return mongoose.connection.dropDatabase();
-    });
-
-    let studio;
-    beforeEach(async() => {
-        studio = await Studio.create({
-            name: 'A fine establishment',
-            address: {
-                city: 'Cleveland',
-                state: 'Ohio',
-                country: 'USA'
-            }
-        });
-    });
-
-    afterAll(() => {
-        return mongoose.connection.close();
-    });
-
     it('should create a studio', () => {
         return request(app)
             .post('/api/v1/studios')

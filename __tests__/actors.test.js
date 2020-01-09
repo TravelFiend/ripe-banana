@@ -1,35 +1,9 @@
-require('dotenv').config();
+const { getActor, getActors } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Actor = require('../lib/models/Actor');
-const Film = require('../lib/models/Film');
-const Studio = require('../lib/models/Studio');
 
 describe('actor routes', () => {
-    beforeAll(() => {
-        connect();
-    });
-
-    beforeEach(() => {
-        return mongoose.connection.dropDatabase();
-    });
-
-    let actor;
-    beforeEach(async() => {
-        actor = await Actor.create({
-            name: 'MikeEG',
-            dob: new Date('July 24, 1842'),
-            pob: 'Cleveland, OH'
-        });
-    });
-
-    afterAll(() => {
-        return mongoose.connection.close();
-    });
-
     it('should create an actor', () => {
         return request(app)
             .post('/api/v1/actors')
