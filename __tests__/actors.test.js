@@ -1,4 +1,4 @@
-const { getActor, getActors } = require('../lib/helpers/data-helpers');
+const { getActor, getActors, getStudio, getFilms } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -24,11 +24,7 @@ describe('actor routes', () => {
     });
 
     it('should get all actors', async() => {
-        await Actor.create({
-            name: 'Doug Lass',
-            dob: new Date('October 23, 1982'),
-            pob: 'Georgetown, MI'
-        });
+        await getActors();
 
         return request(app)
             .get('/api/v1/actors')
@@ -43,24 +39,8 @@ describe('actor routes', () => {
     });
 
     it('should get an actor by id', async() => {
-        const studio = await Studio.create({
-            name: 'Movie Makers',
-            address: {
-                city: 'Des Moines',
-                state: 'Iowa',
-                country: 'USA'
-            }
-        });
-
-        await Film.create({
-            title: 'A Movie',
-            studio: studio._id,
-            released: 2010,
-            cast: {
-                role: 'A fake person',
-                actor: actor._id
-            }
-        });
+        const actor = getActor();
+        await getFilms();
         
         return request(app)
             .get(`/api/v1/actors/${actor._id}`)
