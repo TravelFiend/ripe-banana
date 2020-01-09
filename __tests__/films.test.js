@@ -1,10 +1,13 @@
-const { getFilm, getFilms } = require('../lib/helpers/data-helpers');
+const { getFilm, getFilms, getStudio, getActor, getReviewer, getReviews } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
 
 describe('film routes', () => {
-    it('should create a film', () => {
+    it('should create a film', async() => {
+        const studio = await getStudio();
+        const actor = await getActor();
+
         return request(app)
             .post('/api/v1/films')
             .send({
@@ -13,7 +16,7 @@ describe('film routes', () => {
                 released: 2010,
                 cast: {
                     role: 'A fake person',
-                    actor: actor.id
+                    actor: actor._id
                 }
             })
             .then(res => {
@@ -25,7 +28,7 @@ describe('film routes', () => {
                     cast: [{
                         _id: expect.any(String),
                         role: 'A fake person',
-                        actor: actor.id
+                        actor: actor._id
                     }],
                     __v: 0
                 });
@@ -33,15 +36,8 @@ describe('film routes', () => {
     });
 
     it('should get all films', async() => {
-        await Film.create({
-            title: 'Robots in outer space',
-            studio: studio._id,
-            released: 2013,
-            cast: {
-                role: 'Robot from outer space',
-                actor: actor._id
-            }
-        });
+        await getFilms();
+        const studio = await getStudio();
 
         return request(app)
             .get('/api/v1/films')
@@ -60,7 +56,9 @@ describe('film routes', () => {
             });
     });
 
-    it('should get a film by id', () => {
+    it('should get a film by id', async() => {
+        const film = await getFilm();
+
         return request(app)
             .get(`/api/v1/films/${film._id}`)
             .then(res => {
