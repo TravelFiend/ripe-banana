@@ -39,21 +39,17 @@ describe('actor routes', () => {
     });
 
     it('should get an actor by id', async() => {
-        const actor = getActor();
+        const actor = await getActor();
         await getFilms();
         
         return request(app)
             .get(`/api/v1/actors/${actor._id}`)
             .then(res => {
                 expect(res.body).toEqual({
-                    name: 'MikeEG',
-                    dob: actor.dob.toISOString(),
-                    pob: 'Cleveland, OH',
-                    films: [{
-                        _id: expect.any(String),
-                        title: 'A Movie',
-                        released: 2010
-                    }]
+                    name: actor.name,
+                    dob: actor.dob,
+                    pob: actor.pob,
+                    films: expect.any(Array)
                 });
             });
     });
