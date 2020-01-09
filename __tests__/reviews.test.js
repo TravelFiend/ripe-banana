@@ -50,8 +50,6 @@ describe('review routes', () => {
 
     it('should delete a review', async() => {
         const review = await getReview();
-        const reviewer = await getReviewer();
-        const film = await getFilm();
 
         return request(app)
             .delete(`/api/v1/reviews/${review._id}`)
@@ -64,6 +62,14 @@ describe('review routes', () => {
                     film: expect.any(String),
                     __v: 0
                 });
+            });
+    });
+
+    it('limits to 100 reviews', async() => {
+        return request(app)
+            .get('/api/v1/reviews')
+            .then(reviews => {
+                expect(reviews.body).toHaveLength(100);
             });
     });
 });

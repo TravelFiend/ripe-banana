@@ -1,4 +1,4 @@
-const { getFilm, getFilms, getStudio, getActor } = require('../lib/helpers/data-helpers');
+const { getFilm, getFilms, getStudio, getActor, getReviews } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -58,10 +58,12 @@ describe('film routes', () => {
 
     it('should get a film by id', async() => {
         const film = await getFilm();
+        const reviews = await getReviews({ film: film._id });
 
         return request(app)
             .get(`/api/v1/films/${film._id}`)
             .then(res => {
+                expect(res.body.reviews).toHaveLength(reviews.length);
                 expect(res.body).toEqual({
                     title: film.title,
                     studio: expect.any(Object),
