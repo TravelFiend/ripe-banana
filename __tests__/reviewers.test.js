@@ -1,4 +1,4 @@
-const { getReviewer, getReviewers } = require('../lib/helpers/data-helpers');
+const { getReviewer, getReviewers, getReview } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -21,7 +21,9 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should get all reviewers', () => {
+    it('should get all reviewers', async() => {
+        await getReviewers();
+
         return request(app)
             .get('/api/v1/reviewers')
             .then(res => {
@@ -36,12 +38,9 @@ describe('reviewer routes', () => {
     });
 
     it('should get a reviewer by id', async() => {
-        await Review.create([{
-            rating: 4,
-            reviewer: reviewer._id,
-            review: 'A movie about absolutely nothing',
-            film: film._id
-        }]);
+        await getReview();
+        const reviewer = await getReviewer();
+
         return request(app)
             .get(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
@@ -76,12 +75,8 @@ describe('reviewer routes', () => {
     });
 
     it('should not delete a reviewer if they have reviews', async() => {
-        await Review.create([{
-            rating: 4,
-            reviewer: reviewer._id,
-            review: 'A movie about absolutely nothing',
-            film: film._id
-        }]);
+        const reviewer = await getReviewer();
+        await getReview();
 
         return request(app)
             .delete(`/api/v1/reviewers/${reviewer._id}`)

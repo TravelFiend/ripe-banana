@@ -1,4 +1,4 @@
-const { getActor, getActors, getStudio, getFilms } = require('../lib/helpers/data-helpers');
+const { getActor, getActors, getFilms } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
