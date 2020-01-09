@@ -61,7 +61,9 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should delete a reviewer if they have no reviews', () => {
+    it('should delete a reviewer if they have no reviews', async() => {
+        const reviewer = await getReviewer();
+
         return request(app)
             .delete(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {

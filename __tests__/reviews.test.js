@@ -1,10 +1,13 @@
-const { getReview, getReviews } = require('../lib/helpers/data-helpers');
+const { getReview, getReviews, getReviewer, getFilm } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
 
 describe('review routes', () => {
-    it('should create a review', () => {
+    it('should create a review', async() => {
+        const reviewer = await getReviewer();
+        const film = await getFilm();
+
         return request(app)
             .post('/api/v1/reviews')
             .send({
@@ -25,7 +28,9 @@ describe('review routes', () => {
             });
     });
 
-    it('should get all reviews', () => {
+    it('should get all reviews', async() => {
+        await getReviews();
+
         return request(app)
             .get('/api/v1/reviews')
             .then(res => {
@@ -43,7 +48,11 @@ describe('review routes', () => {
             });
     });
 
-    it('should delete a review', () => {
+    it('should delete a review', async() => {
+        const review = await getReview();
+        const reviewer = await getReviewer();
+        const film = await getFilm();
+
         return request(app)
             .delete(`/api/v1/reviews/${review._id}`)
             .then(res => {
