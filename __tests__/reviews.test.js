@@ -57,11 +57,11 @@ describe('review routes', () => {
             .delete(`/api/v1/reviews/${review._id}`)
             .then(res => {
                 expect(res.body).toEqual({
-                    _id: review._id.toString(),
-                    rating: 4,
-                    reviewer: reviewer.id.toString(),
-                    review: 'A movie about absolutely nothing',
-                    film: film._id.toString(),
+                    _id: expect.any(String),
+                    rating: review.rating,
+                    reviewer: expect.any(String),
+                    review: review.review,
+                    film: expect.any(String),
                     __v: 0
                 });
             });
