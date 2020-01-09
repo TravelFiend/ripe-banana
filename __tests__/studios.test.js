@@ -54,17 +54,9 @@ describe('studio routes', () => {
             .then(res => {
                 expect(res.body).toEqual({
                     _id: expect.any(String),
-                    name: 'A fine establishment',
-                    address: {
-                        _id: expect.any(String),
-                        city: 'Cleveland',
-                        state: 'Ohio',
-                        country: 'USA'
-                    },
-                    films: [{
-                        _id: expect.any(String),
-                        title: 'Fear and Loathing in Las Vegas',
-                    }],
+                    name: studio.name,
+                    address: expect.any(Object),
+                    films: expect.any(Array),
                 });
             });
     });
