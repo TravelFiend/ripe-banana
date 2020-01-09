@@ -1,4 +1,4 @@
-const { getStudio, getStudios } = require('../lib/helpers/data-helpers');
+const { getStudio, getStudios, getFilms } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
@@ -31,14 +31,7 @@ describe('studio routes', () => {
     });
 
     it('should get all studios', async() => {
-        await Studio.create({
-            name: 'A place to shoot stuff',
-            address: {
-                city: 'Portland',
-                state: 'Oregon',
-                country: 'USA'
-            }
-        });
+        await getStudios();
 
         return request(app)
             .get('/api/v1/studios')
@@ -53,20 +46,8 @@ describe('studio routes', () => {
     });
 
     it('should get a studio by id', async() => {
-        const actor = await Actor.create({
-            name: 'Johnny Depp',
-            dob: new Date('June 6, 1974'),
-            pob: 'Boise, ID'
-        });
-        await Film.create({
-            title: 'Fear and Loathing in Las Vegas',
-            studio: studio._id,
-            released: 1996,
-            cast: [{
-                role: 'Hunter S. Thompson',
-                actor: actor._id
-            }]
-        });
+        const studio = await getStudio();
+        await getFilms();
 
         return request(app)
             .get(`/api/v1/studios/${studio._id}`)
