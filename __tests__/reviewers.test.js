@@ -1,61 +1,10 @@
-require('dotenv').config();
+const { getReviewer, getReviewers, getReview, getReviews } = require('../lib/helpers/data-helpers');
+const Review = require('../lib/models/Review');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const connect = require('../lib/utils/connect');
-const mongoose = require('mongoose');
-const Reviewer = require('../lib/models/Reviewer');
-const Review = require('../lib/models/Review');
-const Studio = require('../lib/models/Studio');
-const Film = require('../lib/models/Film');
-const Actor = require('../lib/models/Actor');
 
 describe('reviewer routes', () => {
-    beforeAll(() => {
-        connect();
-    });
-
-    beforeEach(() => {
-        return mongoose.connection.dropDatabase();
-    });
-
-    let studio;
-    let actor;
-    let reviewer;
-    let film;
-    beforeEach(async() => {
-        reviewer = await Reviewer.create({
-            name: 'MikeEG',
-            company: 'Chinchiller'
-        });
-        studio = await Studio.create({
-            name: 'Movie Makers',
-            address: {
-                city: 'Des Moines',
-                state: 'Iowa',
-                country: 'USA'
-            }
-        });
-        actor = await Actor.create({
-            name: 'Carl',
-            dob: new Date('October 14, 1983'),
-            pob: 'Austin, TX'
-        });
-        film = await Film.create({
-            title: 'A movie',
-            studio: studio._id,
-            released: 2010,
-            cast: {
-                role: 'A fake person',
-                actor: actor._id
-            }
-        });
-    });
-
-    afterAll(() => {
-        return mongoose.connection.close();
-    });
-
     it('should create a reviewer', () => {
         return request(app)
             .post('/api/v1/reviewers')
@@ -73,7 +22,9 @@ describe('reviewer routes', () => {
             });
     });
 
-    it('should get all reviewers', () => {
+    it('should get all reviewers', async() => {
+        await getReviewers();
+
         return request(app)
             .get('/api/v1/reviewers')
             .then(res => {
@@ -88,59 +39,48 @@ describe('reviewer routes', () => {
     });
 
     it('should get a reviewer by id', async() => {
-        await Review.create([{
-            rating: 4,
-            reviewer: reviewer._id,
-            review: 'A movie about absolutely nothing',
-            film: film._id
-        }]);
+        const reviewer = await getReviewer();
+        const reviews = await getReviews({ reviewer: reviewer._id });
+
         return request(app)
             .get(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
+                expect(res.body.reviews).toHaveLength(reviews.length);
                 expect(res.body).toEqual({
                     _id: expect.any(String),
-                    name: 'MikeEG',
-                    company: 'Chinchiller',
-                    reviews: [{
-                        _id: expect.any(String),
-                        rating: 4,
-                        review: 'A movie about absolutely nothing',
-                        film: {
-                            _id: expect.any(String),
-                            title: 'A movie'
-                        }
-                    }]
-                });
-            });
-    });
-
-    it('should delete a reviewer if they have no reviews', () => {
-        return request(app)
-            .delete(`/api/v1/reviewers/${reviewer._id}`)
-            .then(res => {
-                expect(res.body).toEqual({
-                    _id: expect.any(String),
-                    name: 'MikeEG',
-                    company: 'Chinchiller',
-                    __v: 0
+                    name: reviewer.name,
+                    company: reviewer.company,
+                    reviews: expect.any(Array)
                 });
             });
     });
 
     it('should not delete a reviewer if they have reviews', async() => {
-        await Review.create([{
-            rating: 4,
-            reviewer: reviewer._id,
-            review: 'A movie about absolutely nothing',
-            film: film._id
-        }]);
-
+        const review = await getReview();
+        const reviewer = await getReviewer({ _id: review.reviewer });
+        
         return request(app)
             .delete(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
                 expect(res.body).toEqual({
-                    message: 'Didn\'t work',
+                    message: 'Unable to delete, reviewer has active reviews',
                     status: 500
+                });
+            });
+    });
+
+    it('should delete a reviewer if they have no reviews', async() => {
+        const reviewer1 = await getReviewer();
+        await Review.deleteMany({ reviewer: reviewer1._id });
+
+        return request(app)
+            .delete(`/api/v1/reviewers/${reviewer1._id}`)
+            .then(res => {
+                expect(res.body).toEqual({
+                    _id: expect.any(String),
+                    name: reviewer1.name,
+                    company: reviewer1.company,
+                    __v: 0
                 });
             });
     });
